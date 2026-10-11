@@ -1,4 +1,4 @@
-package com.reloadkart
+package com.reloadkart.app
 
 import android.app.Application
 import com.facebook.react.PackageList
