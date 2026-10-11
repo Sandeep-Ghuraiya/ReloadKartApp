@@ -2,7 +2,7 @@
 /* eslint-disable react-native/no-inline-styles */
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import LinearGradient from 'react-native-linear-gradient';
-import React, {useEffect, useState} from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 import {
   ActivityIndicator,
   Dimensions,
@@ -20,10 +20,15 @@ import {SafeAreaView} from 'react-native-safe-area-context';
 import {useDispatch, useSelector} from 'react-redux';
 import backGroundImage from '../../assets/gamocoinImages/reloadkart_screen.jpg';
 import {clearResponseData, userSetMpin} from '../../redux/loginReducer';
+import useInternetCheck from '../../hooks/useInternetCheck';
+import {useFocusEffect} from '@react-navigation/native';
+import InternetConnection from '../../components/InternetConnection';
 
 const {width, height} = Dimensions.get('screen');
 
 const AddMpinScreen = ({navigation, route}) => {
+  const internetValue = useInternetCheck();
+
   const {setMpinData} = useSelector(state => state.userDetails);
 
   const [loading, setLoading] = useState(false);
@@ -33,6 +38,7 @@ const AddMpinScreen = ({navigation, route}) => {
   const [mpinError, setMpinError] = useState('');
   const [confirmMpinError, setConfirmMpinError] = useState('');
   const [focusedField, setFocusedField] = useState('');
+  const [showConnection, setShowConnection] = useState(false);
 
   const dispatch = useDispatch();
 
@@ -63,6 +69,16 @@ const AddMpinScreen = ({navigation, route}) => {
     };
     getEmail();
   }, []);
+
+  useFocusEffect(
+    useCallback(() => {
+      if (internetValue) {
+        setShowConnection(false);
+      } else {
+        setShowConnection(true);
+      }
+    }, [internetValue]),
+  );
 
   useEffect(() => {
     if (!setMpinData) return;
@@ -116,43 +132,50 @@ const AddMpinScreen = ({navigation, route}) => {
   };
 
   const handleMpinSubmit = () => {
-    setMpinError('');
-    setConfirmMpinError('');
-    if (!mpin) {
-      setMpinError('MPIN is required');
-    }
-    if (!confirmMpin) {
-      setConfirmMpinError('Confirm MPIN is required');
-    }
+    if (internetValue) {
+      setMpinError('');
+      setConfirmMpinError('');
+      if (!mpin) {
+        setMpinError('MPIN is required');
+      }
+      if (!confirmMpin) {
+        setConfirmMpinError('Confirm MPIN is required');
+      }
 
-    if (mpin !== confirmMpin) {
-      setConfirmMpinError('MPIN and ConfirmMpin does not match');
-    }
+      if (mpin !== confirmMpin) {
+        setConfirmMpinError('MPIN and ConfirmMpin does not match');
+      }
 
-    if (mpin && mpin.length < 4) {
-      setMpinError('MPIN must be 4 digits');
-    }
+      if (mpin && mpin.length < 4) {
+        setMpinError('MPIN must be 4 digits');
+      }
 
-    if (confirmMpin && confirmMpin.length < 4) {
-      setConfirmMpinError('Confirm MPIN must be 4 digits');
-    }
+      if (confirmMpin && confirmMpin.length < 4) {
+        setConfirmMpinError('Confirm MPIN must be 4 digits');
+      }
 
-    if (
-      mpin &&
-      confirmMpin &&
-      mpin === confirmMpin &&
-      mpin.length === 4 &&
-      confirmMpin.length === 4
-    ) {
-      setLoading(true);
-      dispatch(
-        userSetMpin({
-          action: 'set_mpin',
-          email: email,
-          mpin: mpin,
-          confirm_mpin: confirmMpin,
-        }),
-      );
+      if (
+        mpin &&
+        confirmMpin &&
+        mpin === confirmMpin &&
+        mpin.length === 4 &&
+        confirmMpin.length === 4
+      ) {
+        setLoading(true);
+        dispatch(
+          userSetMpin({
+            action: 'set_mpin',
+            email: email,
+            mpin: mpin,
+            confirm_mpin: confirmMpin,
+          }),
+        );
+        setTimeout(() => {
+          setLoading(false);
+        }, 15000);
+      }
+    } else {
+      setShowConnection(true);
     }
   };
 
@@ -256,6 +279,10 @@ const AddMpinScreen = ({navigation, route}) => {
             </View>
           </LinearGradient>
         </SafeAreaView>
+        <InternetConnection
+          visible={showConnection}
+          onClose={() => setShowConnection(false)}
+        />
       </ImageBackground>
     </>
   );

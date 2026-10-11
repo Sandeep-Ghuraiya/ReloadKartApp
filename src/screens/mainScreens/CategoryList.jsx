@@ -1,12 +1,11 @@
 /* eslint-disable no-unused-vars */
-/* eslint-disable curly */
 /* eslint-disable react-native/no-inline-styles */
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, {useCallback, useEffect, useState} from 'react';
 import {FlatList, StyleSheet, Text, View} from 'react-native';
 import {useFocusEffect} from '@react-navigation/native';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
-import {useDispatch, useSelector} from 'react-redux';
+import {useSelector} from 'react-redux';
 //Components
 import BrandItemGrid from '../../components/BrandItemGrid';
 import InternetConnection from '../../components/InternetConnection';
@@ -22,8 +21,6 @@ import PopupImages from '../../models/PopupImages';
 const CategoryList = props => {
   const {categoryList} = useSelector(state => state.vouchers);
 
-  const categoryData = categoryList?.data || [];
-
   const {route, navigation} = props;
   const insets = useSafeAreaInsets();
 
@@ -31,11 +28,11 @@ const CategoryList = props => {
 
   const internetValue = useInternetCheck();
 
-  // const [numItem, setNumItem] = useState(10);
-  const [searchBrandData, setSearchBrandData] = useState('');
-  //Boollean State
+  const [searchData, setSearchData] = useState([]);
   const [pageLoading, setPageLoading] = useState(false);
+  const [searchBrandData, setSearchBrandData] = useState('');
   const [showConnection, setShowConnection] = useState(false);
+  const [categoryData, setCategoryData] = useState([]);
   const [searchLoader, setSearchLoader] = useState(false);
 
   useFocusEffect(
@@ -56,31 +53,33 @@ const CategoryList = props => {
     return () => clearTimeout(timer);
   }, []);
 
-  // useEffect(() => {
-  //   const getCategoryData = async () => {
-  //     if (categoryList?.data) {
-  //       setCategoryData(categoryList.data);
-  //     }
-  //   };
-  //   getCategoryData();
-  // }, [categoryList]);
-
-  const searchData = React.useMemo(() => {
-    if (searchBrandData.trim() === '') return [];
-
-    return categoryData.filter(item =>
-      item.name.toLowerCase().includes(searchBrandData.toLowerCase()),
-    );
-  }, [searchBrandData, categoryData]);
+  useEffect(() => {
+    const getCategoryData = async () => {
+      if (categoryList?.data) {
+        const categoriesData = categoryList?.data;
+        const filteredCategories = categoriesData.filter(
+          item => item.category_type === 'voucher',
+        );
+        setCategoryData(filteredCategories);
+      }
+    };
+    getCategoryData();
+  }, [categoryList]);
 
   useEffect(() => {
-    if (!searchBrandData) return;
+    if (searchBrandData.trim() === '') {
+      setSearchData([]);
+      return;
+    }
 
-    const timer = setTimeout(() => {
+    const filtered = categoryData.filter(item =>
+      item.name.toLowerCase().includes(searchBrandData.toLowerCase()),
+    );
+
+    setSearchData(filtered);
+    setTimeout(() => {
       setSearchLoader(false);
-    }, 8000);
-
-    return () => clearTimeout(timer);
+    }, 500);
   }, [searchBrandData]);
 
   const handleSearch = useCallback(text => {
@@ -91,7 +90,7 @@ const CategoryList = props => {
   return (
     <View style={[styles.container, {paddingBottom: insets.bottom}]}>
       {internetValue ? (
-        <View style={styles.innerContainer}>
+        <View style={[styles.innerContainer]}>
           <PopupImages />
           <CategorySearchFilter
             value={searchBrandData}
@@ -162,6 +161,14 @@ const CategoryList = props => {
                           showsVerticalScrollIndicator={false}
                           nestedScrollEnabled={true}
                           numColumns={3}
+                          columnWrapperStyle={{
+                            justifyContent: 'flex-start',
+                            gap: 8,
+                            marginBottom: 12,
+                          }}
+                          contentContainerStyle={{
+                            paddingHorizontal: 10,
+                          }}
                           renderItem={({item, index}) => (
                             <BrandItemGrid
                               item={item}
@@ -220,7 +227,7 @@ const styles = StyleSheet.create({
     width: '100%',
   },
   listContainer: {
-    paddingHorizontal: 8,
+    paddingHorizontal: 5,
     marginBottom: 12,
     width: '100%',
   },

@@ -10,15 +10,6 @@ export const handleApiError = error => {
     return;
   }
 
-  // 🌐 No response from server
-  if (error.request && !error.response) {
-    Alert.alert(
-      'Network Error',
-      'Unable to reach the server. Please check your internet connection.',
-    );
-    return;
-  }
-
   // ❌ Server responded with error
   if (error.response) {
     Alert.alert('Error', 'Network issue' || 'Sever error');

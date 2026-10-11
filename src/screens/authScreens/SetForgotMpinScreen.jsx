@@ -1,7 +1,7 @@
 /* eslint-disable react-native/no-inline-styles */
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import LinearGradient from 'react-native-linear-gradient';
-import React, {useEffect, useState} from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 import {
   ActivityIndicator,
   Dimensions,
@@ -24,10 +24,14 @@ import {
   setForgotMpin,
 } from '../../redux/loginReducer';
 import AntDesign from '@react-native-vector-icons/ant-design';
+import useInternetCheck from '../../hooks/useInternetCheck';
+import InternetConnection from '../../components/InternetConnection';
+import {useFocusEffect} from '@react-navigation/native';
 
 const {width, height} = Dimensions.get('screen');
 
 const SetForgotMpinScreen = ({navigation, route}) => {
+  const internetValue = useInternetCheck();
   const {forgotMpinData} = useSelector(state => state.userDetails);
 
   const dispatch = useDispatch();
@@ -43,6 +47,7 @@ const SetForgotMpinScreen = ({navigation, route}) => {
   const [focusedField, setFocusedField] = useState('');
   const [timer, setTimer] = useState(120);
   const [canResend, setCanResend] = useState(false);
+  const [showConnection, setShowConnection] = useState(false);
 
   const showToast = ({
     message,
@@ -71,6 +76,16 @@ const SetForgotMpinScreen = ({navigation, route}) => {
     };
     getEmail();
   }, []);
+
+  useFocusEffect(
+    useCallback(() => {
+      if (internetValue) {
+        setShowConnection(false);
+      } else {
+        setShowConnection(true);
+      }
+    }, [internetValue]),
+  );
 
   useEffect(() => {
     if (timer === 0) {
@@ -117,52 +132,59 @@ const SetForgotMpinScreen = ({navigation, route}) => {
   };
 
   const handleForgotMpin = () => {
-    setOtpError('');
-    setNewMpinError('');
-    setConfirmMpinError('');
-    if (!otp) {
-      setOtpError('OTP is required');
-    }
-    if (!newMpin) {
-      setNewMpinError('New MPIN is required');
-    }
-    if (!confirmMpin) {
-      setConfirmMpinError('Confirm MPIN is required');
-    }
-    if (newMpin !== confirmMpin) {
-      setConfirmMpinError('New MPIN and Confirm MPIN does not match');
-    }
-    if (otp && otp.length < 6) {
-      setOtpError('OTP must be 6 digits');
-    }
+    if (internetValue) {
+      setOtpError('');
+      setNewMpinError('');
+      setConfirmMpinError('');
+      if (!otp) {
+        setOtpError('OTP is required');
+      }
+      if (!newMpin) {
+        setNewMpinError('New MPIN is required');
+      }
+      if (!confirmMpin) {
+        setConfirmMpinError('Confirm MPIN is required');
+      }
+      if (newMpin !== confirmMpin) {
+        setConfirmMpinError('New MPIN and Confirm MPIN does not match');
+      }
+      if (otp && otp.length < 6) {
+        setOtpError('OTP must be 6 digits');
+      }
 
-    if (newMpin && newMpin.length < 4) {
-      setNewMpinError('New MPIN must be 4 digits');
-    }
+      if (newMpin && newMpin.length < 4) {
+        setNewMpinError('New MPIN must be 4 digits');
+      }
 
-    if (confirmMpin && confirmMpin.length < 4) {
-      setConfirmMpinError('Confirm MPIN must be 4 digits');
-    }
+      if (confirmMpin && confirmMpin.length < 4) {
+        setConfirmMpinError('Confirm MPIN must be 4 digits');
+      }
 
-    if (
-      otp &&
-      newMpin &&
-      confirmMpin &&
-      newMpin === confirmMpin &&
-      otp.length === 6 &&
-      newMpin.length === 4 &&
-      confirmMpin.length === 4
-    ) {
-      setLoading(true);
-      dispatch(
-        setForgotMpin({
-          action: 'confirm_forgot_mpin',
-          email: email,
-          otp: otp,
-          new_mpin: newMpin,
-          confirm_mpin: confirmMpin,
-        }),
-      );
+      if (
+        otp &&
+        newMpin &&
+        confirmMpin &&
+        newMpin === confirmMpin &&
+        otp.length === 6 &&
+        newMpin.length === 4 &&
+        confirmMpin.length === 4
+      ) {
+        setLoading(true);
+        dispatch(
+          setForgotMpin({
+            action: 'confirm_forgot_mpin',
+            email: email,
+            otp: otp,
+            new_mpin: newMpin,
+            confirm_mpin: confirmMpin,
+          }),
+        );
+        setTimeout(() => {
+          setLoading(false);
+        }, 10000);
+      }
+    } else {
+      setShowConnection(true);
     }
   };
 
@@ -331,6 +353,10 @@ const SetForgotMpinScreen = ({navigation, route}) => {
             </View>
           </LinearGradient>
         </SafeAreaView>
+        <InternetConnection
+          visible={showConnection}
+          onClose={() => setShowConnection(false)}
+        />
       </ImageBackground>
     </>
   );

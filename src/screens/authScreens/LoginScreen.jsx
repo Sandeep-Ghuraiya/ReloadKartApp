@@ -4,7 +4,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable react-native/no-inline-styles */
 /* eslint-disable react/react-in-jsx-scope */
-import {useEffect, useState} from 'react';
+import {useCallback, useEffect, useState} from 'react';
 import {
   ActivityIndicator,
   Dimensions,
@@ -42,6 +42,9 @@ import backGroundImage from '../../assets/gamocoinImages/reloadkart_screen.jpg';
 
 //COMPONENTS
 import ShowAlert from '../../components/ShowAlert';
+import useInternetCheck from '../../hooks/useInternetCheck';
+import {useFocusEffect} from '@react-navigation/native';
+import InternetConnection from '../../components/InternetConnection';
 
 const {width, height} = Dimensions.get('screen');
 
@@ -50,6 +53,7 @@ const validationSchema = yup.object().shape({
 });
 
 const LoginScreen = props => {
+  const internetValue = useInternetCheck();
   const {navigation, route} = props;
 
   const device_info = useSelector(state => state.deviceInfo.deviceInfoData);
@@ -84,6 +88,7 @@ const LoginScreen = props => {
   const [isOtpVisible, setIsOtpVisible] = useState(false);
   const [timer, setTimer] = useState(120);
   const [canResend, setCanResend] = useState(false);
+  const [showConnection, setShowConnection] = useState(false);
 
   const clearResponse = key => {
     dispatch(clearResponseData(key));
@@ -105,6 +110,16 @@ const LoginScreen = props => {
       statusBarHeight: 50,
     });
   };
+
+  useFocusEffect(
+    useCallback(() => {
+      if (internetValue) {
+        setShowConnection(false);
+      } else {
+        setShowConnection(true);
+      }
+    }, [internetValue]),
+  );
 
   useEffect(() => {
     if (timer === 0) {
@@ -194,47 +209,62 @@ const LoginScreen = props => {
   }, [userGeneralData]);
 
   const handleLogin = data => {
-    setOtpError('');
-    if (!otp && isOtpVisible) {
-      setOtpError('OTP is required');
-    }
-    if (otp && isOtpVisible && otp.length < 6) {
-      setOtpError('OTP must be 6 digits');
-    }
-    if (otp && isOtpVisible) {
-      if (otp.length === 6) {
+    if (internetValue) {
+      setOtpError('');
+      if (!otp && isOtpVisible) {
+        setOtpError('OTP is required');
+      }
+      if (otp && isOtpVisible && otp.length < 6) {
+        setOtpError('OTP must be 6 digits');
+      }
+      if (otp && isOtpVisible) {
+        if (otp.length === 6) {
+          setLoading(true);
+          Keyboard.dismiss();
+          dispatch(
+            userLoginOtp({
+              action: 'email_verify_otp',
+              email: data.email,
+              otp: otp,
+            }),
+          );
+        }
+      } else if (data.email) {
+        setEmail(data.email);
         setLoading(true);
         Keyboard.dismiss();
-        dispatch(
-          userLoginOtp({
-            action: 'email_verify_otp',
-            email: data.email,
-            otp: otp,
-          }),
-        );
+        const user_data = JSON.stringify({
+          action: 'email_otp',
+          email: data.email,
+          device_token: device_info?.deviceToken || '',
+          device_id: device_info?.deviceId || '',
+        });
+        dispatch(userLoginDetails(user_data));
+
+        setTimeout(() => {
+          setLoading(false);
+        }, 10000);
       }
-    } else if (data.email) {
-      setEmail(data.email);
-      setLoading(true);
-      Keyboard.dismiss();
-      const user_data = JSON.stringify({
-        action: 'email_otp',
-        email: data.email,
-        device_token: device_info?.deviceToken || '',
-        device_id: device_info?.deviceId || '',
-      });
-      dispatch(userLoginDetails(user_data));
+    } else {
+      setShowConnection(true);
     }
   };
 
   const onResendOtp = () => {
-    setLoading(true);
-    dispatch(
-      userLoginDetails({
-        action: 'email_otp',
-        email: email,
-      }),
-    );
+    if (internetValue) {
+      setLoading(true);
+      dispatch(
+        userLoginDetails({
+          action: 'email_otp',
+          email: email,
+        }),
+      );
+      setTimeout(() => {
+        setLoading(false);
+      }, 10000);
+    } else {
+      setShowConnection(true);
+    }
   };
 
   const handleFocus = fieldName => {
@@ -368,6 +398,10 @@ const LoginScreen = props => {
             </View>
           </LinearGradient>
         </SafeAreaView>
+        <InternetConnection
+          visible={showConnection}
+          onClose={() => setShowConnection(false)}
+        />
       </ImageBackground>
     </>
   );

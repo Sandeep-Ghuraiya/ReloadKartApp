@@ -1,6 +1,6 @@
 /* eslint-disable prettier/prettier */
 /* eslint-disable react-native/no-inline-styles */
-import {topupDataList, voucherDataList} from '../redux/voucherReducer';
+import {singleTopupData, singleVoucherData} from '../redux/voucherReducer';
 import React, {useMemo} from 'react';
 import {
   Dimensions,
@@ -34,21 +34,11 @@ const VoucherCard = ({item}) => {
     });
 
     if (item.product_type === 'voucher') {
-      const voucherPayload = {
-        data: 'SingleData',
-        voucherData: productData,
-      };
-
-      dispatch(voucherDataList(voucherPayload));
+      dispatch(singleVoucherData(productData));
 
       navigation.navigate('SingleVoucher');
     } else {
-      const topupPayload = {
-        data: 'SingleTopupData',
-        topupData: productData,
-      };
-
-      dispatch(topupDataList(topupPayload));
+      dispatch(singleTopupData(productData));
 
       navigation.navigate('SingleTopup');
     }

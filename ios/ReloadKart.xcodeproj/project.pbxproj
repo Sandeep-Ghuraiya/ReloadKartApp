@@ -22,24 +22,24 @@
 			containerPortal = 83CBB9F71A601CBA00E9B192 /* Project object */;
 			proxyType = 1;
 			remoteGlobalIDString = 13B07F861A680F5B00A75B9A;
-			remoteInfo = "ReloadKart";
+			remoteInfo = ReloadKart;
 		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		00E356EE1AD99517003FC87E /* ReloadKartTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "ReloadKartTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
+		00E356EE1AD99517003FC87E /* ReloadKartTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ReloadKartTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		00E356F11AD99517003FC87E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		00E356F21AD99517003FC87E /* ReloadKartTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "ReloadKartTests.m"; sourceTree = "<group>"; };
+		00E356F21AD99517003FC87E /* ReloadKartTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ReloadKartTests.m; sourceTree = "<group>"; };
 		100D9FF5A56A322FECCCE07B /* libPods-ReloadKart.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-ReloadKart.a"; sourceTree = BUILT_PRODUCTS_DIR; };
-		13B07F961A680F5B00A75B9A /* ReloadKart.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "ReloadKart.app"; sourceTree = BUILT_PRODUCTS_DIR; };
-		13B07FAF1A68108700A75B9A /* AppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AppDelegate.h; path = "ReloadKart/AppDelegate.h"; sourceTree = "<group>"; };
-		13B07FB01A68108700A75B9A /* AppDelegate.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = AppDelegate.mm; path = "ReloadKart/AppDelegate.mm"; sourceTree = "<group>"; };
-		13B07FB51A68108700A75B9A /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = "ReloadKart/Images.xcassets"; sourceTree = "<group>"; };
-		13B07FB61A68108700A75B9A /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = "ReloadKart/Info.plist"; sourceTree = "<group>"; };
-		13B07FB71A68108700A75B9A /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = main.m; path = "ReloadKart/main.m"; sourceTree = "<group>"; };
+		13B07F961A680F5B00A75B9A /* ReloadKart.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ReloadKart.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		13B07FAF1A68108700A75B9A /* AppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AppDelegate.h; path = ReloadKart/AppDelegate.h; sourceTree = "<group>"; };
+		13B07FB01A68108700A75B9A /* AppDelegate.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = AppDelegate.mm; path = ReloadKart/AppDelegate.mm; sourceTree = "<group>"; };
+		13B07FB51A68108700A75B9A /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = ReloadKart/Images.xcassets; sourceTree = "<group>"; };
+		13B07FB61A68108700A75B9A /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = ReloadKart/Info.plist; sourceTree = "<group>"; };
+		13B07FB71A68108700A75B9A /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = main.m; path = ReloadKart/main.m; sourceTree = "<group>"; };
 		2E34ECE332F71D578A33757F /* Pods-ReloadKart-ReloadKartTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ReloadKart-ReloadKartTests.debug.xcconfig"; path = "Target Support Files/Pods-ReloadKart-ReloadKartTests/Pods-ReloadKart-ReloadKartTests.debug.xcconfig"; sourceTree = "<group>"; };
 		451F94B2416B929023D88757 /* Pods-ReloadKart.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ReloadKart.debug.xcconfig"; path = "Target Support Files/Pods-ReloadKart/Pods-ReloadKart.debug.xcconfig"; sourceTree = "<group>"; };
-		81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = LaunchScreen.storyboard; path = "ReloadKart/LaunchScreen.storyboard"; sourceTree = "<group>"; };
+		81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = LaunchScreen.storyboard; path = ReloadKart/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		84AD8334FA77CFEB63F307CC /* Pods-ReloadKart.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ReloadKart.release.xcconfig"; path = "Target Support Files/Pods-ReloadKart/Pods-ReloadKart.release.xcconfig"; sourceTree = "<group>"; };
 		88505D4670FA222FCAC16965 /* libPods-ReloadKart-ReloadKartTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-ReloadKart-ReloadKartTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		8B922C201247B2D30B6B74DC /* Pods-ReloadKart-ReloadKartTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ReloadKart-ReloadKartTests.release.xcconfig"; path = "Target Support Files/Pods-ReloadKart-ReloadKartTests/Pods-ReloadKart-ReloadKartTests.release.xcconfig"; sourceTree = "<group>"; };
@@ -72,7 +72,7 @@
 				00E356F21AD99517003FC87E /* ReloadKartTests.m */,
 				00E356F01AD99517003FC87E /* Supporting Files */,
 			);
-			path = "ReloadKartTests";
+			path = ReloadKartTests;
 			sourceTree = "<group>";
 		};
 		00E356F01AD99517003FC87E /* Supporting Files */ = {
@@ -93,7 +93,7 @@
 				81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */,
 				13B07FB71A68108700A75B9A /* main.m */,
 			);
-			name = "ReloadKart";
+			name = ReloadKart;
 			sourceTree = "<group>";
 		};
 		2D16E6871FA4F8E400B85C8A /* Frameworks */ = {
@@ -167,8 +167,8 @@
 			dependencies = (
 				00E356F51AD99517003FC87E /* PBXTargetDependency */,
 			);
-			name = "ReloadKartTests";
-			productname = "ReloadKartTests";
+			name = ReloadKartTests;
+			productName = ReloadKartTests;
 			productReference = 00E356EE1AD99517003FC87E /* ReloadKartTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
@@ -188,8 +188,8 @@
 			);
 			dependencies = (
 			);
-			name = "ReloadKart";
-			productName = "ReloadKart";
+			name = ReloadKart;
+			productName = ReloadKart;
 			productReference = 13B07F961A680F5B00A75B9A /* ReloadKart.app */;
 			productType = "com.apple.product-type.application";
 		};
@@ -417,7 +417,7 @@
 					"DEBUG=1",
 					"$(inherited)",
 				);
-				INFOPLIST_FILE = "ReloadKartTests/Info.plist";
+				INFOPLIST_FILE = ReloadKartTests/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 13.4;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -429,7 +429,7 @@
 					"-lc++",
 					"$(inherited)",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "com.reloadkart.app";
+				PRODUCT_BUNDLE_IDENTIFIER = com.reloadkart.app;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/ReloadKart.app/ReloadKart";
 			};
@@ -441,7 +441,7 @@
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				COPY_PHASE_STRIP = NO;
-				INFOPLIST_FILE = "ReloadKartTests/Info.plist";
+				INFOPLIST_FILE = ReloadKartTests/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 13.4;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -453,7 +453,7 @@
 					"-lc++",
 					"$(inherited)",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "com.reloadkart.app";
+				PRODUCT_BUNDLE_IDENTIFIER = com.reloadkart.app;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/ReloadKart.app/ReloadKart";
 			};
@@ -468,8 +468,8 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 3RQ5L7ZTK2;
 				ENABLE_BITCODE = NO;
-				INFOPLIST_FILE = "ReloadKart/Info.plist";
-             INFOPLIST_KEY_CFBundleDisplayName = "ReloadKart";
+				INFOPLIST_FILE = ReloadKart/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = ReloadKart;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -480,8 +480,8 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "com.reloadkart.app";
-				PRODUCT_NAME = "ReloadKart";
+				PRODUCT_BUNDLE_IDENTIFIER = com.reloadkart.app;
+				PRODUCT_NAME = ReloadKart;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
 				VERSIONING_SYSTEM = "apple-generic";
@@ -496,8 +496,8 @@
 				CLANG_ENABLE_MODULES = YES;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 3RQ5L7ZTK2;
-				INFOPLIST_FILE = "ReloadKart/Info.plist";
-             INFOPLIST_KEY_CFBundleDisplayName = "ReloadKart";
+				INFOPLIST_FILE = ReloadKart/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = ReloadKart;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -508,8 +508,8 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "com.reloadkart.app";
-				PRODUCT_NAME = "ReloadKart";
+				PRODUCT_BUNDLE_IDENTIFIER = com.reloadkart.app;
+				PRODUCT_NAME = ReloadKart;
 				SWIFT_VERSION = 5.0;
 				VERSIONING_SYSTEM = "apple-generic";
 			};

@@ -5,7 +5,7 @@ import React, {useCallback, useEffect, useState} from 'react';
 import {Alert, StatusBar, StyleSheet, Text, View} from 'react-native';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 //Redux
-import {useSelector} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 //Components
 import InternetConnection from '../../components/InternetConnection';
 import SingleTopupView from '../../components/SingleTopupView';
@@ -14,16 +14,19 @@ import useInternetCheck from '../../hooks/useInternetCheck';
 //Models
 import PopupImages from '../../models/PopupImages';
 import SinglePageSkeleton from '../../loader/SinglePageSkeleton';
+import {clearSingleTopupData} from '../../redux/voucherReducer';
 
 const SingleTopup = () => {
   const loaderTimerRef = React.useRef(null);
   const insets = useSafeAreaInsets();
 
-  const {topupList} = useSelector(state => state.vouchers);
+  const {singleTopupObject} = useSelector(state => state.vouchers);
 
   const internetValue = useInternetCheck();
 
-  const [allTopupData, setAllTopupData] = useState(null);
+  const dispatch = useDispatch();
+
+  const [singleTopupData, setSingleTopupData] = useState(null);
   const [showConnection, setShowConnection] = useState(false);
   const [loading, setLoading] = useState(true);
 
@@ -31,27 +34,49 @@ const SingleTopup = () => {
     useCallback(() => {
       if (internetValue) {
         setShowConnection(false);
+
+        // Reset states
+        setSingleTopupData(null);
+        setLoading(true);
       } else {
         setShowConnection(true);
+        setLoading(false);
       }
-    }, [internetValue]),
+
+      return () => {
+        dispatch(clearSingleTopupData());
+
+        if (loaderTimerRef.current) {
+          clearTimeout(loaderTimerRef.current);
+        }
+      };
+    }, [internetValue, dispatch]),
   );
 
   useEffect(() => {
-    setLoading(true);
+    if (!singleTopupObject) {
+      return;
+    }
 
-    if (topupList?.status === 1 && topupList?.data) {
-      setAllTopupData(topupList?.data);
+    // Clear previous timer
+    if (loaderTimerRef.current) {
+      clearTimeout(loaderTimerRef.current);
     }
 
     loaderTimerRef.current = setTimeout(() => {
-      setLoading(false);
-
-      if (topupList?.status === 0) {
-        setAllTopupData(null);
-
-        Alert.alert('Error', 'Internal Server Error');
+      // Success
+      if (singleTopupObject?.status === 1) {
+        setSingleTopupData(singleTopupObject?.data);
       }
+
+      // Error
+      else if (singleTopupObject?.status === 0) {
+        setSingleTopupData(null);
+
+        Alert.alert('Error', 'Internal server error');
+      }
+
+      setLoading(false);
     }, 2000);
 
     return () => {
@@ -59,7 +84,7 @@ const SingleTopup = () => {
         clearTimeout(loaderTimerRef.current);
       }
     };
-  }, [topupList]);
+  }, [singleTopupObject]);
 
   return (
     <View style={[styles.productContainer, {paddingBottom: insets.bottom}]}>
@@ -70,10 +95,10 @@ const SingleTopup = () => {
             <SinglePageSkeleton />
           </View>
         ) : (
-          allTopupData && (
+          singleTopupData && (
             <View style={{flex: 1}}>
               <PopupImages />
-              <SingleTopupView topupData={allTopupData} />
+              <SingleTopupView topupData={singleTopupData} />
             </View>
           )
         )

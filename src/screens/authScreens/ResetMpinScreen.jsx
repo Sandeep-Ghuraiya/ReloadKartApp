@@ -1,7 +1,7 @@
 /* eslint-disable react-native/no-inline-styles */
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import LinearGradient from 'react-native-linear-gradient';
-import React, {useEffect, useState} from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 import {
   ActivityIndicator,
   Dimensions,
@@ -21,13 +21,28 @@ import {useDispatch, useSelector} from 'react-redux';
 import backGroundImage from '../../assets/gamocoinImages/reloadkart_screen.jpg';
 import {clearResponseData, resetMpinDetails} from '../../redux/loginReducer';
 import AntDesign from '@react-native-vector-icons/ant-design';
+import InternetConnection from '../../components/InternetConnection';
+import useInternetCheck from '../../hooks/useInternetCheck';
+import {useFocusEffect} from '@react-navigation/native';
 
 const {width, height} = Dimensions.get('screen');
 
 const ResetMpinScreen = ({navigation, route}) => {
+  const internetValue = useInternetCheck();
+
   const {resetMpinData} = useSelector(state => state.userDetails);
 
   const dispatch = useDispatch();
+
+  useFocusEffect(
+    useCallback(() => {
+      if (internetValue) {
+        setShowConnection(false);
+      } else {
+        setShowConnection(true);
+      }
+    }, [internetValue]),
+  );
 
   const [loading, setLoading] = useState(false);
   const [email, setEmail] = useState('');
@@ -36,6 +51,7 @@ const ResetMpinScreen = ({navigation, route}) => {
   const [oldMpinError, setOldMpinError] = useState('');
   const [newMpinError, setNewMpinError] = useState('');
   const [focusedField, setFocusedField] = useState('');
+  const [showConnection, setShowConnection] = useState(false);
 
   const showToast = ({
     message,
@@ -98,31 +114,38 @@ const ResetMpinScreen = ({navigation, route}) => {
   };
 
   const handleForgotMpin = () => {
-    setNewMpinError('');
-    setOldMpinError('');
-    if (!oldMpin) {
-      setOldMpinError('Old MPIN is required');
-    }
-    if (!newMpin) {
-      setNewMpinError('New MPIN is required');
-    }
-    if (oldMpin && oldMpin.length < 4) {
-      setOldMpinError('Old MPIN must be 4 digits');
-    }
-    if (newMpin && newMpin.length < 4) {
-      setNewMpinError('New MPIN must be 4 digits');
-    }
+    if (internetValue) {
+      setNewMpinError('');
+      setOldMpinError('');
+      if (!oldMpin) {
+        setOldMpinError('Old MPIN is required');
+      }
+      if (!newMpin) {
+        setNewMpinError('New MPIN is required');
+      }
+      if (oldMpin && oldMpin.length < 4) {
+        setOldMpinError('Old MPIN must be 4 digits');
+      }
+      if (newMpin && newMpin.length < 4) {
+        setNewMpinError('New MPIN must be 4 digits');
+      }
 
-    if (newMpin && oldMpin && newMpin.length === 4 && oldMpin.length === 4) {
-      setLoading(true);
-      dispatch(
-        resetMpinDetails({
-          action: 'reset_mpin',
-          email: email,
-          old_mpin: oldMpin,
-          new_mpin: newMpin,
-        }),
-      );
+      if (newMpin && oldMpin && newMpin.length === 4 && oldMpin.length === 4) {
+        setLoading(true);
+        dispatch(
+          resetMpinDetails({
+            action: 'reset_mpin',
+            email: email,
+            old_mpin: oldMpin,
+            new_mpin: newMpin,
+          }),
+        );
+        setTimeout(() => {
+          setLoading(false);
+        }, 10000);
+      }
+    } else {
+      setShowConnection(true);
     }
   };
 
@@ -242,6 +265,10 @@ const ResetMpinScreen = ({navigation, route}) => {
             </View>
           </LinearGradient>
         </SafeAreaView>
+        <InternetConnection
+          visible={showConnection}
+          onClose={() => setShowConnection(false)}
+        />
       </ImageBackground>
     </>
   );

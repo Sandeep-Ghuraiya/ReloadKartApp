@@ -7,7 +7,7 @@ import {Image, Modal, StyleSheet, TouchableOpacity, View} from 'react-native';
 // REDUX
 import {useDispatch, useSelector} from 'react-redux';
 import {resetCounter} from '../redux/counterReducer';
-import {topupDataList, voucherDataList} from '../redux/voucherReducer';
+import {singleTopupData, singleVoucherData} from '../redux/voucherReducer';
 
 // ICONS & NAVIGATION
 import AntDesign from '@react-native-vector-icons/ant-design';
@@ -125,21 +125,11 @@ const PopupImages = () => {
       });
 
       if (selectedOffer?.product?.product_type === 'voucher') {
-        dispatch(
-          voucherDataList({
-            data: 'SingleData',
-            voucherData: productData,
-          }),
-        );
+        dispatch(singleVoucherData(productData));
 
         navigation.navigate('SingleVoucher');
       } else {
-        dispatch(
-          topupDataList({
-            data: 'SingleTopupData',
-            topupData: productData,
-          }),
-        );
+        dispatch(singleTopupData(productData));
 
         navigation.navigate('SingleTopup');
       }

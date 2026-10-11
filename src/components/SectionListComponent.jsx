@@ -113,7 +113,7 @@ const SectionListComponent = ({
           sections={sections}
           keyExtractor={(_, index) => index.toString()}
           showsVerticalScrollIndicator={false}
-          stickySectionHeadersEnabled
+          stickySectionHeadersEnabled={false}
           renderSectionHeader={({section}) => (
             <View style={[styles.sectionHeader]}>
               <Text style={styles.sectionHeaderText}>{section.title}</Text>

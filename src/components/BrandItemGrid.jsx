@@ -108,10 +108,9 @@ export default BrandItemGrid;
 
 const styles = StyleSheet.create({
   tabItemGrid: {
-    // flex: 1,
+    //flex: 1,
     width: '32%',
-    marginBottom: 35,
-    marginHorizontal: 3,
+    paddingVertical: 6,
   },
   brandItemWrapper: {
     flex: 1,

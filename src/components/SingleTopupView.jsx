@@ -189,6 +189,9 @@ const SingleTopupView = ({topupData}) => {
       dispatch(orderModalOpen(true));
       await dispatch(createOrder(orderData));
     }
+    setTimeout(() => {
+      setLoading(false);
+    }, 10000);
   }, [dispatch]);
 
   const handleChange = (key, value) => {
@@ -337,6 +340,13 @@ const SingleTopupView = ({topupData}) => {
                           </View>
                         )}
                       </View>
+                      {topupData?.region_note && (
+                        <View style={[{marginTop: 10}]}>
+                          <Text style={{color: 'red', fontWeight: '600'}}>
+                            {topupData?.region_note}
+                          </Text>
+                        </View>
+                      )}
                     </View>
                   </View>
                   <View style={styles.accordionToggleContainer}>
@@ -416,7 +426,11 @@ const SingleTopupView = ({topupData}) => {
                   )}
                 </TouchableOpacity>
               ) : (
-                <View style={[styles.buttonContainer, {backgroundColor: '#EF4444'}]}>
+                <View
+                  style={[
+                    styles.buttonContainer,
+                    {backgroundColor: '#EF4444'},
+                  ]}>
                   <Text style={styles.buttonText}>Out of Stock</Text>
                 </View>
               )}

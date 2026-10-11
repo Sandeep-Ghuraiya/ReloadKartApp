@@ -5,7 +5,7 @@ import React, {useCallback, useEffect, useState} from 'react';
 import {Alert, StatusBar, StyleSheet, Text, View} from 'react-native';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 //Redux
-import {useSelector} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 //Components
 import InternetConnection from '../../components/InternetConnection';
 import SingleVoucherView from '../../components/SingleVoucherView';
@@ -14,45 +14,70 @@ import useInternetCheck from '../../hooks/useInternetCheck';
 //Models
 import PopupImages from '../../models/PopupImages';
 import SinglePageSkeleton from '../../loader/SinglePageSkeleton';
+import {clearSingleVoucherData} from '../../redux/voucherReducer';
 
 const SingleVoucher = () => {
   const loaderTimerRef = React.useRef(null);
+
   const insets = useSafeAreaInsets();
 
-  const {voucherList} = useSelector(state => state.vouchers);
+  const {singleVoucherObject} = useSelector(state => state.vouchers);
+
+  const dispatch = useDispatch();
 
   const internetValue = useInternetCheck();
 
-  const [allVouchersData, setAllVouchersData] = useState(null);
+  const [vouchersData, setVouchersData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [showConnection, setShowConnection] = useState(false);
-  // const [errorMessage, setErrorMessage] = useState('');
 
   useFocusEffect(
     useCallback(() => {
       if (internetValue) {
         setShowConnection(false);
+
+        // Reset states
+        setVouchersData(null);
+        setLoading(true);
       } else {
         setShowConnection(true);
+        setLoading(false);
       }
-    }, [internetValue]),
+
+      return () => {
+        dispatch(clearSingleVoucherData());
+
+        if (loaderTimerRef.current) {
+          clearTimeout(loaderTimerRef.current);
+        }
+      };
+    }, [internetValue, dispatch]),
   );
 
   useEffect(() => {
-    setLoading(true);
+    if (!singleVoucherObject) {
+      return;
+    }
 
-    if (voucherList?.status === 1 && voucherList?.data) {
-      setAllVouchersData(voucherList.data);
+    // Clear previous timer
+    if (loaderTimerRef.current) {
+      clearTimeout(loaderTimerRef.current);
     }
 
     loaderTimerRef.current = setTimeout(() => {
-      setLoading(false);
-
-      if (voucherList?.status === 0) {
-        setAllVouchersData(null);
-
-        Alert.alert('Error', 'Internal Server Error');
+      // Success
+      if (singleVoucherObject?.status === 1) {
+        setVouchersData(singleVoucherObject?.data);
       }
+
+      // Error
+      else if (singleVoucherObject?.status === 0) {
+        setVouchersData(null);
+
+        Alert.alert('Error', 'Internal server error');
+      }
+
+      setLoading(false);
     }, 2000);
 
     return () => {
@@ -60,7 +85,7 @@ const SingleVoucher = () => {
         clearTimeout(loaderTimerRef.current);
       }
     };
-  }, [voucherList]);
+  }, [singleVoucherObject]);
 
   return (
     <View style={[styles.productContainer, {paddingBottom: insets.bottom}]}>
@@ -71,10 +96,10 @@ const SingleVoucher = () => {
             <SinglePageSkeleton />
           </View>
         ) : (
-          allVouchersData && (
+          vouchersData && (
             <View style={{flex: 1}}>
               <PopupImages />
-              <SingleVoucherView voucherData={allVouchersData} />
+              <SingleVoucherView voucherData={vouchersData} />
             </View>
           )
         )

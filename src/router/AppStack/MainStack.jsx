@@ -20,12 +20,10 @@ import SingleVoucher from '../../screens/mainScreens/SingleVoucher';
 import TopupList from '../../screens/mainScreens/TopupList';
 import SingleTopup from '../../screens/mainScreens/SingleTopup';
 import SingleOrderView from '../../screens/mainScreens/SingleOrderView';
-import ThankYouScreen from '../../screens/mainScreens/ThankYouScreen';
 import TopupBrandList from '../../screens/mainScreens/TopUpBrandList';
 // import WebViewScreen from '../../screens/mainScreens/WebViewScreen';
 import {useSelector} from 'react-redux';
 import OrderModal from '../../models/orderModal';
-import PaymentCancel from '../../screens/mainScreens/PaymentCanncel';
 import SingleTipsBlogView from '../../screens/mainScreens/SingleTipsBlogView';
 
 const Stack = createNativeStackNavigator();
@@ -205,24 +203,6 @@ const MainStack = () => {
             headerBackImage: () => (
               <FontAwesome name="angle-left" size={25} color="#fff" />
             ),
-          }}
-        />
-
-        {/* THANK YOU */}
-        <Stack.Screen
-          name="ThankYouScreen"
-          component={ThankYouScreen}
-          options={{
-            headerShown: false,
-          }}
-        />
-
-        {/* CANCEL PAYMENT */}
-        <Stack.Screen
-          name="PaymentCancel"
-          component={PaymentCancel}
-          options={{
-            headerShown: false,
           }}
         />
 

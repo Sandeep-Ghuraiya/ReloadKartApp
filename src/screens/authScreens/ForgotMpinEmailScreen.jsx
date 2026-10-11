@@ -2,12 +2,13 @@
 import {yupResolver} from '@hookform/resolvers/yup';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import LinearGradient from 'react-native-linear-gradient';
-import React, {useEffect, useState} from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 import {Controller, useForm} from 'react-hook-form';
 import {
   ActivityIndicator,
   Dimensions,
   ImageBackground,
+  Keyboard,
   KeyboardAvoidingView,
   Platform,
   ScrollView,
@@ -24,6 +25,9 @@ import * as yup from 'yup';
 import backGroundImage from '../../assets/gamocoinImages/reloadkart_screen.jpg';
 import {clearResponseData, forgotMpinEmail} from '../../redux/loginReducer';
 import AntDesign from '@react-native-vector-icons/ant-design';
+import useInternetCheck from '../../hooks/useInternetCheck';
+import {useFocusEffect} from '@react-navigation/native';
+import InternetConnection from '../../components/InternetConnection';
 
 const {width, height} = Dimensions.get('screen');
 
@@ -32,6 +36,7 @@ const validationSchema = yup.object().shape({
 });
 
 const ForgotMpinEmailScreen = ({navigation, route}) => {
+  const internetValue = useInternetCheck();
   const {mpinEmailData} = useSelector(state => state.userDetails);
 
   const dispatch = useDispatch();
@@ -39,6 +44,17 @@ const ForgotMpinEmailScreen = ({navigation, route}) => {
   const [loading, setLoading] = useState(false);
   const [email, setEmail] = useState('');
   const [focusedField, setFocusedField] = useState('');
+  const [showConnection, setShowConnection] = useState(false);
+
+  useFocusEffect(
+    useCallback(() => {
+      if (internetValue) {
+        setShowConnection(false);
+      } else {
+        setShowConnection(true);
+      }
+    }, [internetValue]),
+  );
 
   const {
     control,
@@ -51,16 +67,27 @@ const ForgotMpinEmailScreen = ({navigation, route}) => {
     },
   });
 
-  const onResetPassword = data => {
-    setLoading(true);
-    setEmail(data.email);
-    dispatch(
-      forgotMpinEmail({
-        action: 'forgot_mpin',
-        email: data.email,
-      }),
-    );
-  };
+  const onResetPassword = useCallback(
+    data => {
+      if (internetValue) {
+        setLoading(true);
+        setEmail(data.email);
+        Keyboard.dismiss();
+        dispatch(
+          forgotMpinEmail({
+            action: 'forgot_mpin',
+            email: data.email,
+          }),
+        );
+        setTimeout(() => {
+          setLoading(false);
+        }, 10000);
+      } else {
+        setShowConnection(true);
+      }
+    },
+    [dispatch, internetValue],
+  );
 
   const showToast = ({
     message,
@@ -219,6 +246,10 @@ const ForgotMpinEmailScreen = ({navigation, route}) => {
             </View>
           </LinearGradient>
         </SafeAreaView>
+        <InternetConnection
+          visible={showConnection}
+          onClose={() => setShowConnection(false)}
+        />
       </ImageBackground>
     </>
   );

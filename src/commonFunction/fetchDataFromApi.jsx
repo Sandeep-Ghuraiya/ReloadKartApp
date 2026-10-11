@@ -30,8 +30,7 @@ export default function fetchDataFromApi(dispatch) {
     category_id: '',
     type: 'voucher' /*voucher,topup,gift*/,
   });
-  const voucherPayload = {data: 'AllData', voucherData};
-  dispatch(voucherDataList(voucherPayload));
+  dispatch(voucherDataList(voucherData));
 
   //Topup Data
   const topupData = JSON.stringify({
@@ -41,6 +40,5 @@ export default function fetchDataFromApi(dispatch) {
     category_id: '',
     type: 'topup' /*voucher,topup,gift*/,
   });
-  const topupPayload = {data: 'AllTopupData', topupData};
-  dispatch(topupDataList(topupPayload));
+  dispatch(topupDataList(topupData));
 }

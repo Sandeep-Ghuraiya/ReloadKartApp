@@ -5,9 +5,11 @@ import instance from '../axios/api';
 
 const initialState = {
   voucherList: null,
+  singleVoucherObject: null,
   brandList: null,
   categoryList: null,
   topupList: null,
+  singleTopupObject: null,
   specialVouchersList: null,
   loading: false,
   voucherLoading: false,
@@ -16,17 +18,28 @@ const initialState = {
 
 export const voucherDataList = createAsyncThunk(
   'voucher/voucherDataList',
-  async ({data, voucherData}, {rejectWithValue}) => {
+  async (payload, {rejectWithValue}) => {
     try {
       // Sending the POST request to the API
-      const response = await instance.post('/api', voucherData);
+      const response = await instance.post('/api', payload);
 
-      if (data === 'AllData') {
-        await AsyncStorage.setItem(
-          'voucher_items',
-          JSON.stringify(response.data?.data),
-        );
-      }
+      await AsyncStorage.setItem(
+        'voucher_items',
+        JSON.stringify(response.data?.data),
+      );
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(error.response?.data || 'Something Went Wrong');
+    }
+  },
+);
+
+export const singleVoucherData = createAsyncThunk(
+  'voucher/singleVoucherData',
+  async (payload, {rejectWithValue}) => {
+    try {
+      // Sending the POST request to the API
+      const response = await instance.post('/api', payload);
       return response.data;
     } catch (error) {
       return rejectWithValue(error.response?.data || 'Something Went Wrong');
@@ -68,17 +81,27 @@ export const categoryListData = createAsyncThunk(
 
 export const topupDataList = createAsyncThunk(
   'voucher/topupDataList',
-  async ({data, topupData}, {rejectWithValue}) => {
+  async (payload, {rejectWithValue}) => {
     try {
       // Sending the POST request to the API
-      const response = await instance.post('/api', topupData);
+      const response = await instance.post('/api', payload);
+      await AsyncStorage.setItem(
+        'topup_items',
+        JSON.stringify(response.data?.data),
+      );
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(error.response?.data || 'Something Went Wrong');
+    }
+  },
+);
 
-      if (data === 'AllTopupData') {
-        await AsyncStorage.setItem(
-          'topup_items',
-          JSON.stringify(response.data?.data),
-        );
-      }
+export const singleTopupData = createAsyncThunk(
+  'voucher/singleTopupData',
+  async (payload, {rejectWithValue}) => {
+    try {
+      // Sending the POST request to the API
+      const response = await instance.post('/api', payload);
       return response.data;
     } catch (error) {
       return rejectWithValue(error.response?.data || 'Something Went Wrong');
@@ -106,7 +129,14 @@ export const specialVouchersDataList = createAsyncThunk(
 const VoucherSlice = createSlice({
   name: 'vocherData',
   initialState,
-  reducers: {},
+  reducers: {
+    clearSingleVoucherData: state => {
+      state.singleVoucherObject = null;
+    },
+    clearSingleTopupData: state => {
+      state.singleTopupObject = null;
+    },
+  },
   extraReducers: builder => {
     builder
       .addCase(voucherDataList.pending, state => {
@@ -118,6 +148,19 @@ const VoucherSlice = createSlice({
         state.voucherList = action.payload;
       })
       .addCase(voucherDataList.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+
+      .addCase(singleVoucherData.pending, state => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(singleVoucherData.fulfilled, (state, action) => {
+        state.loading = false;
+        state.singleVoucherObject = action.payload;
+      })
+      .addCase(singleVoucherData.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
       })
@@ -161,6 +204,19 @@ const VoucherSlice = createSlice({
         state.error = action.payload;
       })
 
+      .addCase(singleTopupData.pending, state => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(singleTopupData.fulfilled, (state, action) => {
+        state.loading = false;
+        state.singleTopupObject = action.payload;
+      })
+      .addCase(singleTopupData.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+
       .addCase(specialVouchersDataList.pending, state => {
         state.loading = true;
         state.error = null;
@@ -176,5 +232,6 @@ const VoucherSlice = createSlice({
   },
 });
 
-export const {} = VoucherSlice.actions;
+export const {clearSingleVoucherData, clearSingleTopupData} =
+  VoucherSlice.actions;
 export default VoucherSlice.reducer;

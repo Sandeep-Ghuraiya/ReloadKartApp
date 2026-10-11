@@ -93,12 +93,20 @@ const TabSection = () => {
       }
 
       if (categoryList?.data) {
-        setCategoryData(categoryList.data);
+        const categoriesData = categoryList?.data;
+        const filteredCategories = categoriesData.filter(
+          item => item.category_type === 'voucher',
+        );
+        setCategoryData(filteredCategories);
       } else {
         const categoryValue = await AsyncStorage.getItem('category_items');
+
         if (categoryValue) {
           const parsedCategory = JSON.parse(categoryValue);
-          setCategoryData(parsedCategory);
+          const filteredCategories = parsedCategory.filter(
+            item => item.category_type === 'voucher',
+          );
+          setCategoryData(filteredCategories);
         }
       }
     };
@@ -201,7 +209,7 @@ const TabSection = () => {
             )}
           </View>
 
-          {/* <HtmlTitle name={item.name} /> */}
+          <HtmlTitle name={item.name} />
         </TouchableOpacity>
       </View>
     );
@@ -285,7 +293,7 @@ const TabSection = () => {
 
   const renderItems = () => {
     if (tabText === 'category') {
-      return categoryData.slice(0, 8).map(renderCategoryItem);
+      return categoryData.map(renderCategoryItem);
     } else if (tabText === 'brand') {
       return brandData.map(renderBrandItem);
     } else {
@@ -336,7 +344,7 @@ const TabSection = () => {
 
         <View style={styles.tabItemGrid}>{renderItems()}</View>
 
-        {((tabText === 'category' && categoryData.length > 8) ||
+        {((tabText === 'category' && categoryData.length > 4) ||
           (tabText === 'giftCard' && giftCardData.length > 0) ||
           (tabText === 'brand' && brandData.length > 0)) && (
           <View style={styles.viewAllWrapper}>

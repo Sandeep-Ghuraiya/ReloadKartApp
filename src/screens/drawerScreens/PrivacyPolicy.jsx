@@ -56,8 +56,11 @@ const PrivacyPolicy = () => {
     (function() {
       const style = document.createElement('style');
       style.innerHTML = \`
+        .desktop-navbar,
         .mobile-navbar,
+        .mobile-drawer,
         .footer-tnc-divider,
+        .voucher-breadcrumb-main,
         .col-md-4 {
           display: none !important;
         }
@@ -66,6 +69,10 @@ const PrivacyPolicy = () => {
           overflow-x: hidden !important;
           background: #1a130f !important;
         }
+
+        .page .site-main > .container {
+          margin-top: -40px !important;
+        } 
       \`;
 
       document.head.appendChild(style);
@@ -90,7 +97,7 @@ const PrivacyPolicy = () => {
             webRef.current.injectJavaScript(injectedJS);
             setTimeout(() => {
               setLoading(false);
-            }, 1000);
+            }, 1500);
           }}
           javaScriptEnabled={true}
           domStorageEnabled={true}

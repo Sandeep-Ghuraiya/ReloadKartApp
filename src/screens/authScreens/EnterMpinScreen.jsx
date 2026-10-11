@@ -1,7 +1,7 @@
 /* eslint-disable react-native/no-inline-styles */
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import LinearGradient from 'react-native-linear-gradient';
-import React, {useEffect, useState} from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 import {
   ActivityIndicator,
   Dimensions,
@@ -20,10 +20,14 @@ import {SafeAreaView} from 'react-native-safe-area-context';
 import {useDispatch, useSelector} from 'react-redux';
 import backGroundImage from '../../assets/gamocoinImages/reloadkart_screen.jpg';
 import {clearResponseData, loginWithMpin} from '../../redux/loginReducer';
+import useInternetCheck from '../../hooks/useInternetCheck';
+import {useFocusEffect} from '@react-navigation/native';
+import InternetConnection from '../../components/InternetConnection';
 
 const {width, height} = Dimensions.get('screen');
 
 const EnterMpinScreen = ({navigation, route}) => {
+  const internetValue = useInternetCheck();
   const {loginMpinData} = useSelector(state => state.userDetails);
   const device_info = useSelector(state => state.deviceInfo.deviceInfoData);
 
@@ -32,6 +36,7 @@ const EnterMpinScreen = ({navigation, route}) => {
   const [mpin, setMpin] = useState('');
   const [mpinError, setMpinError] = useState('');
   const [focusedField, setFocusedField] = useState('');
+  const [showConnection, setShowConnection] = useState(false);
 
   const dispatch = useDispatch();
 
@@ -51,6 +56,16 @@ const EnterMpinScreen = ({navigation, route}) => {
       statusBarHeight: 50,
     });
   };
+
+  useFocusEffect(
+    useCallback(() => {
+      if (internetValue) {
+        setShowConnection(false);
+      } else {
+        setShowConnection(true);
+      }
+    }, [internetValue]),
+  );
 
   useEffect(() => {
     const getEmail = async () => {
@@ -96,26 +111,33 @@ const EnterMpinScreen = ({navigation, route}) => {
   };
 
   const handleLoginMpin = () => {
-    setMpinError('');
-    if (!mpin) {
-      setMpinError('MPIN is required');
-    }
+    if (internetValue) {
+      setMpinError('');
+      if (!mpin) {
+        setMpinError('MPIN is required');
+      }
 
-    if (mpin && mpin.length < 4) {
-      setMpinError('MPIN must be 4 digits');
-    }
+      if (mpin && mpin.length < 4) {
+        setMpinError('MPIN must be 4 digits');
+      }
 
-    if (mpin && mpin.length === 4) {
-      setLoading(true);
-      dispatch(
-        loginWithMpin({
-          action: 'login_mpin',
-          email: email,
-          mpin: mpin,
-          device_token: device_info?.deviceToken || '',
-          device_id: device_info?.deviceId || '',
-        }),
-      );
+      if (mpin && mpin.length === 4) {
+        setLoading(true);
+        dispatch(
+          loginWithMpin({
+            action: 'login_mpin',
+            email: email,
+            mpin: mpin,
+            device_token: device_info?.deviceToken || '',
+            device_id: device_info?.deviceId || '',
+          }),
+        );
+        setTimeout(() => {
+          setLoading(false);
+        }, 15000);
+      }
+    } else {
+      setShowConnection(true);
     }
   };
 
@@ -211,6 +233,10 @@ const EnterMpinScreen = ({navigation, route}) => {
             </View>
           </LinearGradient>
         </SafeAreaView>
+        <InternetConnection
+          visible={showConnection}
+          onClose={() => setShowConnection(false)}
+        />
       </ImageBackground>
     </>
   );

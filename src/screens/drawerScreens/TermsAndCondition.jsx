@@ -58,11 +58,17 @@ const TermsAndCondition = () => {
     (function() {
       const style = document.createElement('style');
       style.innerHTML = \`
+        .desktop-navbar,
         .mobile-navbar,
+        .mobile-drawer,
+        .voucher-breadcrumb-main,
         .footer-tnc-divider,
         .col-md-4 {
           display: none !important;
         }
+        .page .site-main > .container {
+          margin-top: -40px !important;
+        } 
       \`;
 
       document.head.appendChild(style);
@@ -85,7 +91,7 @@ const TermsAndCondition = () => {
           webRef.current.injectJavaScript(injectedJS);
           setTimeout(() => {
             setLoading(false);
-          }, 1000);
+          }, 1500);
         }}
         javaScriptEnabled={true}
         domStorageEnabled={true}

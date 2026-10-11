@@ -157,6 +157,10 @@ const SingleVoucherView = ({voucherData}) => {
     });
     dispatch(orderModalOpen(true));
     await dispatch(createOrder(createData));
+
+    setTimeout(() => {
+      setLoading(false);
+    }, 10000);
   }, [
     dispatch,
     email,
@@ -311,6 +315,13 @@ const SingleVoucherView = ({voucherData}) => {
                           </View>
                         )}
                       </View>
+                      {voucherData?.region_note && (
+                        <View style={[{marginTop: 10}]}>
+                          <Text style={{color: 'red', fontWeight: '600'}}>
+                            {voucherData?.region_note}
+                          </Text>
+                        </View>
+                      )}
                     </View>
                   </View>
 
